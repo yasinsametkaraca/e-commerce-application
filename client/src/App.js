@@ -1,15 +1,24 @@
 import './App.css';
-import {Button} from "antd";
-import Header from "./component/Header";
-import Footer from "./component/Footer";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import HomePage from "./pages/HomePage";
+import {Route, Routes} from "react-router-dom";
+import AboutPage from "./pages/AboutPage";
+import Container from "react-bootstrap/Container";
 
 function App() {
-  return (
-    <div>
-      <Header></Header>
-      <main>main</main>
-      <Footer></Footer>
-    </div>
-  );
+    return (
+        <>
+            <Header></Header>
+            <Container className={"mb-5 mt-4"}>
+                <Routes>
+                    <Route path={"/"} element={<HomePage/>}></Route>
+                    <Route path={"/about"} element={<AboutPage/>}></Route>
+                </Routes>
+            </Container>
+            <Footer></Footer>
+        </>
+    );
 }
+
 export default App;
