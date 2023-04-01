@@ -13,7 +13,7 @@ class Category(models.Model):
 class Product(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)  # if user is deleted, set this field to null
     name = models.CharField(max_length=100, null=True, blank=True)
-    image = models.ImageField(null=True, blank=True, default='/placeholder.png')
+    image = models.ImageField(null=True, blank=True, default='/default.png')
     brand = models.CharField(max_length=100, null=True, blank=True)
     category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
     description = models.TextField(null=True, blank=True)

@@ -5,12 +5,12 @@ from .products import products
 
 
 @api_view(('GET',))
-def getProducts(request):
+def getMyProducts(request):
     return Response(products)
 
 
 @api_view(('GET',))
-def getProduct(request, pk):
+def getMyProduct(request, pk):
     product = None
     for i in products:
         if i['_id'] == pk:
