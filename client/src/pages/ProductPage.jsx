@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useNavigate, useParams} from "react-router-dom";
 import Rating from "../components/Rating";
 import Button from "react-bootstrap/Button";
-import {Col, ListGroup, Row, Form} from "react-bootstrap";
+import { ListGroup, Form} from "react-bootstrap";
 import {useDispatch, useSelector} from "react-redux";
 import {productDetailsAction} from "../redux/actions/productAction";
 import Loading from "../components/Loading";
@@ -22,7 +22,6 @@ const ProductPage = () => {
     const addToCartHandler = () => {
         navigate(`/cart/${id}?quantity=${quantity}`)
     }
-
 
     return (
         <>
@@ -54,7 +53,7 @@ const ProductPage = () => {
                                 </ListGroup>
                                 <div className={"col-md-12 mt-3"}>
                                     {
-                                        product?.countInStock > 0 && (
+                                        product?.countInStock > 0 ? (
                                             <>
                                                 <div className={"d-flex justify-content-between"}>
                                                     <div className={"d-flex align-items-center"}><span className={"mr-1"}>Quantity </span>
@@ -69,7 +68,7 @@ const ProductPage = () => {
                                                     </div>
                                                 </div>
                                             </>
-                                        )
+                                        ) : <AlertMessage variant={"danger"} message={"No Stock"}></AlertMessage>
                                     }
                                 </div>
                             </div>

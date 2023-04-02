@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import {Link, useLocation, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {addToCartAction} from "../redux/actions/cartAction";
+import {addToCartAction, removeFromCartAction} from "../redux/actions/cartAction";
 import {Col, Image, ListGroup, Row, Form, Card} from "react-bootstrap";
 import AlertMessage from "../components/AlertMessage";
 import Button from "react-bootstrap/Button";
@@ -16,10 +16,13 @@ function CartPage(props) {
     const {cartItems} = cart;
 
     useEffect(() => {
-
         id && dispatch(addToCartAction(id, quantity));
-
     }, [dispatch, id, quantity]);
+
+    const removeFromCartHandler = (id) => {
+        console.log(id);
+        dispatch(removeFromCartAction(id));
+    }
 
     return (
         <div>
@@ -48,7 +51,7 @@ function CartPage(props) {
                                                  </Form.Control>
                                             </Col>
                                             <Col className={"d-flex align-items-center"} md={1}>
-                                                <Button type={"button"} variant={"light"}><i className={"fa fa-trash"}></i></Button>
+                                                <Button onClick={() => removeFromCartHandler(item.product)} type={"button"} variant={"light"}><i className={"fa fa-trash"}></i></Button>
                                             </Col>
                                          </Row>
                                      </div>
