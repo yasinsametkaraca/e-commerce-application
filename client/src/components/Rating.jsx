@@ -2,7 +2,7 @@ import React from 'react'
 
 function Rating({value}) {
     return (
-        <div className='rating'>
+        <div>
           <span>
               <i className={
                   value >= 1 ? 'fa-solid fa-star' : value >= 0.5 ? 'fas fa-star-half-alt' : 'fa-regular fa-star'

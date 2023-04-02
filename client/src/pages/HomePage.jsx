@@ -1,27 +1,34 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Col, Row} from "react-bootstrap";
-import Product from "../components/Product";
-import axios from "axios";
+import ProductCard from "../components/ProductCard";
+import {useDispatch, useSelector} from "react-redux";
+import {productListAction} from "../redux/actions/productAction";
+import Loading from "../components/Loading";
+import AlertMessage from "../components/AlertMessage";
 
 function HomePage(props) {
 
-    const [products, setProducts] = useState([]);
+    const dispatch = useDispatch();
+    const productList = useSelector(state => state.productList);
+    const {loading, error, products} = productList;
+
     useEffect(() => {
-        const getProducts = async () => {
-            const {data} = await axios.get("/api/products/");
-            setProducts(data);
-        }
-        getProducts();
-    }, []);
+        dispatch(productListAction());
+    }, [dispatch]);
 
     return (
-        <Row className={"d-flex justify-content-between"}>
-            {products?.map(product => (
-                <Col key={product._id} className={"mt-2 mb-2 d-flex justify-content-between"} sm={12} md={6} lg={4}
-                     xl={3}>
-                    <Product product={product}/>
-                </Col>
-            ))}
+        <Row className={"d-flex justify-content-center"}>
+            {loading ? <Loading/>
+                : error
+                ? <AlertMessage variant={"danger"} message={error} />
+                : (
+                    products?.map(product => (
+                    <Col key={product._id} className={"mt-2 mb-2 d-flex justify-content-between"} sm={12} md={6} lg={4}
+                         xl={3}>
+                        <ProductCard product={product}/>
+                    </Col>
+                )))
+            }
         </Row>
     );
 }

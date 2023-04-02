@@ -1,54 +1,83 @@
 import React, {useEffect, useState} from 'react';
-import axios from "axios";
-import {useParams} from "react-router-dom";
-import product from "../components/Product";
+import {useNavigate, useParams} from "react-router-dom";
 import Rating from "../components/Rating";
 import Button from "react-bootstrap/Button";
-import {ListGroup} from "react-bootstrap";
-
+import {Col, ListGroup, Row, Form} from "react-bootstrap";
+import {useDispatch, useSelector} from "react-redux";
+import {productDetailsAction} from "../redux/actions/productAction";
+import Loading from "../components/Loading";
+import AlertMessage from "../components/AlertMessage";
 const ProductPage = () => {
     const {id} = useParams();
+    const dispatch = useDispatch();
+    const productDetails = useSelector(state => state.productDetails);
+    const {loading, error, product} = productDetails;
+    const [quantity, setQuantity] = useState(1);
+    const navigate = useNavigate();
 
-    const [product, setProduct] = useState();
-    const getProduct = async (id) => {
-        const {data} = await axios.get("/api/products/" + id);
-        setProduct(data);
-    }
     useEffect(() => {
-        getProduct(id);
-    }, []);
+        dispatch(productDetailsAction(id));
+    }, [dispatch, id]);
+
+    const addToCartHandler = () => {
+        navigate(`/cart/${id}?quantity=${quantity}`)
+    }
+
 
     return (
-        <div>
-            <div className={"header"}>
-                <div className={"row"}>
-                    <div className={"col-md-9"}><h2>{product?.name}</h2></div>
-                    <div className={"col-md-3"}><Rating value={product?.rating}></Rating></div>
-                    <i className={"col-md-3"}><i className={"fa fa-eye"}></i>Reviews {product?.numReviews}</i>
-                </div>
-            </div>
-            <div>
-                <div className={"row mt-3"}>
-                    <div className={"col-md-6"}>
-                        <img src={product?.image} alt={product?.name} className={"img-fluid"}/>
-                    </div>
-                    <div className={"col-md-6"}>
-                        <div className={"col-md-12 mb-3"}>
-                            {product?.description}
-                        </div>
-                        <ListGroup>
-                            <ListGroup.Item>Stok: {product?.countInStock}</ListGroup.Item>
-                            <ListGroup.Item>Brand: {product?.brand}</ListGroup.Item>
-                            <ListGroup.Item>Category: {product?.category}</ListGroup.Item>
-                            <ListGroup.Item>Price: {product?.price}</ListGroup.Item>
-                        </ListGroup>
-                        <div className={"col-md-12 mt-3"}>
-                            <Button variant={"primary"}><i className={"fa-solid fa-cart-shopping"}></i>Add Cart</Button>
+        <>
+            {loading ? <Loading /> : error ? <AlertMessage variant={"danger"} message={error}/> :
+                <div>
+                    <div className={"header"}>
+                        <div className={"row d-flex justify-content-between"}>
+                            <div className={"col-md-6"}><h4>{product?.name}</h4></div>
+                            <div className={"d-flex justify-content-between col-md-6"}>
+                                <div className={"col-md-3 d-flex align-items-center"}><Rating value={product?.rating}></Rating></div>
+                                <i className={"col-md-3 d-flex align-items-center"}><i className={"fa fa-eye"}></i>Reviews {product?.reviewsCount}</i>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
+                    <div>
+                        <div className={"row mt-3"}>
+                            <div className={"col-md-6"}>
+                                <img width={600} src={product?.image} alt={product?.name} className={"img-fluid"}/>
+                            </div>
+                            <div className={"col-md-6"}>
+                                <div className={"col-md-12 my-2"}>
+                                    {product?.description}
+                                </div>
+                                <ListGroup>
+                                    <ListGroup.Item>Stok: {product?.countInStock}</ListGroup.Item>
+                                    <ListGroup.Item>Brand: {product?.brand}</ListGroup.Item>
+                                    <ListGroup.Item>Category: {product?.category}</ListGroup.Item>
+                                    <ListGroup.Item>Price: {product?.price}</ListGroup.Item>
+                                </ListGroup>
+                                <div className={"col-md-12 mt-3"}>
+                                    {
+                                        product?.countInStock > 0 && (
+                                            <>
+                                                <div className={"d-flex justify-content-between"}>
+                                                    <div className={"d-flex align-items-center"}><span className={"mr-1"}>Quantity </span>
+                                                        <Form.Control as={"select"} value={quantity} onChange={(e) => setQuantity(e.target.value)}>
+                                                            {
+                                                                [...Array(product?.countInStock).keys()].map(x => <option key={x + 1} value={x + 1}>{x + 1}</option>)
+                                                            }
+                                                        </Form.Control>
+                                                    </div>
+                                                    <div className={"d-flex align-items-center"}>
+                                                        <Button disabled={product.countInStock === 0} onClick={addToCartHandler} className={"d-inline"} variant={"primary"}><i className={"fa-solid fa-cart-shopping"}></i>Add Cart</Button>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>}
+        </>
+
     );
 };
 
