@@ -8,7 +8,7 @@ import Button from "react-bootstrap/Button";
 
 function CartPage(props) {
     const {id} = useParams();
-    const useQuantity = useLocation()  //urlyi kopyaladık.
+    const useQuantity = useLocation()  //urlyi kopyaladık. Url yi okumak için useLocation kullanıyoruz.
     const quantity = Number(useQuantity.search.split('=')[1]) //urlde ki quantity değerini aldık.
 
     const dispatch = useDispatch();
