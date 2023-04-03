@@ -42,6 +42,7 @@ function Header() {
                         <Link className={"nav-link"} to={"/"}>Home</Link>
                         <Link className={"nav-link"} to={"/about"}>About</Link>
                         <Link className={"nav-link"} to={"/"}>Products</Link>
+                        <Link className={"nav-link"} to={"/cart"}>Cart</Link>
                         {
                             userInfo ? (
                                 <>

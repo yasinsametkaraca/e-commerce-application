@@ -46,9 +46,9 @@ const ProductPage = () => {
                                     {product?.description}
                                 </div>
                                 <ListGroup>
+                                    <ListGroup.Item>Category: {product?.categoryName}</ListGroup.Item>
                                     <ListGroup.Item>Stok: {product?.countInStock}</ListGroup.Item>
                                     <ListGroup.Item>Brand: {product?.brand}</ListGroup.Item>
-                                    <ListGroup.Item>Category: {product?.category}</ListGroup.Item>
                                     <ListGroup.Item>Price: {product?.price}</ListGroup.Item>
                                 </ListGroup>
                                 <div className={"col-md-12 mt-3"}>

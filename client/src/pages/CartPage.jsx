@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Link, useLocation, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
 import {addToCartAction, removeFromCartAction} from "../redux/actions/cartAction";
 import {Col, Image, ListGroup, Row, Form, Card} from "react-bootstrap";
@@ -14,6 +14,7 @@ function CartPage(props) {
     const dispatch = useDispatch();
     const cart = useSelector(state => state.cart);
     const {cartItems} = cart;
+    const navigate = useNavigate();
 
     useEffect(() => {
         id && dispatch(addToCartAction(id, quantity));
@@ -22,6 +23,9 @@ function CartPage(props) {
     const removeFromCartHandler = (id) => {
         console.log(id);
         dispatch(removeFromCartAction(id));
+    }
+    const chechoutHandler = () => {
+        navigate("/shipping")
     }
 
     return (
@@ -68,7 +72,7 @@ function CartPage(props) {
                                 ${cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0).toFixed(2)}
                             </ListGroup.Item>
                             <ListGroup.Item>
-                                <Button type={"button"} className={"btn-block"} disabled={cartItems.length === 0}>Complete Your Shopping</Button>
+                                <Button onClick={chechoutHandler} type={"button"} className={"btn-block"} disabled={cartItems.length === 0}>Complete Your Shopping</Button>
                             </ListGroup.Item>
                         </ListGroup>
                     </Card>

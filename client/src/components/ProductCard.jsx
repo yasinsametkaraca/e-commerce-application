@@ -10,9 +10,9 @@ function ProductCard({product}) {
         <Card border="Info" style={{ width: '25rem' }} className={"d-flex justify-content-center"}>
             <Link to={`/product/${product._id}`}><Card.Img variant="top" src={product.image} height={200}/></Link>
             <Card.Body className={"text-center"}>
-                {/*<Card.Text style={{fontSize: "14px"}}>
-                    {product.category}
-                </Card.Text>*/}
+                <Card.Text style={{fontSize: "14px"}}>
+                    {product.categoryName}
+                </Card.Text>
                 <Card.Title>{product.name}</Card.Title>
                 <Card.Text>
                     {product.description.substring(0,29)}

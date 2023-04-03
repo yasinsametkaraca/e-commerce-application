@@ -31,16 +31,21 @@ class MyTokenObtainPairView(TokenObtainPairView):
 def getUserProfile(request):
     user = request.user  # verilen tokena göre user bilgilerini alıyoruz.
     serializer = UserSerializer(user, many=False)
-    return Response(serializer.data)
+    return Response(serializer.data)     # böyle return oluyor profil = "id": 3,"_id": 3, "username": "hatice","email": "", "name": "","isAdmin": true
 
-    """ böyle return oluyor profil.
-        "id": 3,
-        "_id": 3,
-        "username": "hatice",
-        "email": "",
-        "name": "",
-        "isAdmin": true
-    """
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated, ])
+def updateUserProfile(request):
+    user = request.user
+    serializer = UserSerializerWithToken(user, many=False)
+
+    data = request.data
+    user.first_name = data['name']
+    user.username = data['username']
+    user.email = data['email']
+    user.save()
+    return Response(serializer.data)
 
 
 @api_view(['GET', ])
@@ -67,3 +72,4 @@ def registerUser(request):
     except:
         message = {'detail': 'User with this email already exists'}
         return Response(message, status=status.HTTP_400_BAD_REQUEST)
+

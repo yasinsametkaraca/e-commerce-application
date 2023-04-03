@@ -1,11 +1,18 @@
 import {
     USER_DETAIL_FAIL,
-    USER_DETAIL_REQUEST, USER_DETAIL_SUCCESS,
+    USER_DETAIL_REQUEST,
+    USER_DETAIL_RESET,
+    USER_DETAIL_SUCCESS,
     USER_LOGIN_FAIL,
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
-    USER_LOGOUT, USER_REGISTER_FAIL,
-    USER_REGISTER_REQUEST, USER_REGISTER_SUCCESS
+    USER_LOGOUT,
+    USER_REGISTER_FAIL,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
+    USER_UPDATE_PROFILE_FAIL,
+    USER_UPDATE_PROFILE_REQUEST,
+    USER_UPDATE_PROFILE_SUCCESS
 } from "../constants/userConstants";
 import axios from "axios";
 
@@ -37,6 +44,7 @@ export const registerAction = (username, password, name, email) => async (dispat
 export const logoutAction = () => (dispatch) => {
     localStorage.removeItem('userInfo');  //sonradan cookilerle yapıcam burayı.
     dispatch({ type: USER_LOGOUT });
+    dispatch({ type: USER_DETAIL_RESET });
 }
 
 export const getUserDetailAction = () => async (dispatch, getState) => {
@@ -48,5 +56,18 @@ export const getUserDetailAction = () => async (dispatch, getState) => {
         dispatch({ type: USER_DETAIL_SUCCESS, payload: data });
     } catch (err) {
         dispatch({ type: USER_DETAIL_FAIL, payload: err.response && err.response.data.detail ? err.response.data.detail : err.message });
+    }
+}
+export const updateUserProfileAction = (userProfileInfo) => async (dispatch, getState) => {
+    try {
+        dispatch({ type: USER_UPDATE_PROFILE_REQUEST });
+        const {user: {userInfo}} = getState();  //genel redux state inden user bilgilerini alıyoruz.
+        const config = {headers: {'Content-Type': 'application/json', Authorization: `Bearer ${userInfo.token}`}}
+        const {data} = await axios.put(`/api/users/profile/update`, userProfileInfo, config);
+        dispatch({ type: USER_UPDATE_PROFILE_SUCCESS, payload: data });
+        dispatch({ type: USER_LOGIN_SUCCESS, payload: data })  //bunu yapmamızın sebebi redux storagede user bilgilerini güncellemek.
+        localStorage.setItem('userInfo', JSON.stringify(data));
+    } catch (err) {
+        dispatch({ type: USER_UPDATE_PROFILE_FAIL, payload: err.response && err.response.data.detail ? err.response.data.detail : err.message });
     }
 }
