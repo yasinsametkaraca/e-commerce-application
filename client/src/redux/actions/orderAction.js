@@ -1,0 +1,20 @@
+import {CREATE_ORDER_REQUEST, CREATE_ORDER_SUCCESS} from "../constants/orderConstants";
+import axios from "axios";
+
+
+export const createOrderAction = (order) => async (dispatch, getState) => {
+    try {
+        dispatch({type: CREATE_ORDER_REQUEST});
+        const {user: {userInfo}} = getState(); //getState() ile store'daki state'e ulaşabiliyoruz.
+
+        const config = {headers: {'Content-Type': 'application/json', Authorization: `Bearer ${userInfo.token}`},}
+        const {data} = await axios.post(`/api/orders/add`, order, config);
+        dispatch({type: CREATE_ORDER_SUCCESS, payload: data});
+
+        dispatch({type: 'CART_CLEAR_ITEMS', payload: data});
+        localStorage.removeItem('cartItems');
+    } catch (error) {
+        dispatch({type: 'CREATE_ORDER_FAIL', payload: error.response && error.response.data.detail ? error.response.data.detail : error.message});
+    }
+}
+

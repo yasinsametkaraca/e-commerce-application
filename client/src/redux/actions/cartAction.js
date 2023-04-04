@@ -39,3 +39,4 @@ export const savePaymentMethodAction = (data) => (dispatch) => {
     });
     localStorage.setItem("paymentMethod", JSON.stringify(data));
 }
+

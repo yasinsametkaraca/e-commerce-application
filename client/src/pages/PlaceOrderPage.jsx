@@ -4,6 +4,8 @@ import {useNavigate} from "react-router-dom";
 import CheckoutSteps from "../components/CheckoutSteps";
 import {Button, Card, Col, Image, ListGroup, Row} from "react-bootstrap";
 import AlertMessage from "../components/AlertMessage";
+import {createOrderAction} from "../redux/actions/orderAction";
+import Loading from "../components/Loading";
 
 function PlaceOrderPage(props) {
     const cart = useSelector(state => state.cart);
@@ -14,9 +16,34 @@ function PlaceOrderPage(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
+    const creteOrder = useSelector(state => state.createOrder);
+    const {order, success, error,loading} = creteOrder;
+
+    console.log(order)
+
+    useEffect(() => {
+        if(success){
+            navigate(`/order/${order._id}`);
+            dispatch({type: "CREATE_ORDER_RESET"});
+        }
+    }, [success, navigate, dispatch, order]);
+
     useEffect(() => {
         if(!cart.paymentMethod) navigate("/payment");
     }, [cart.paymentMethod, navigate]);
+
+    console.log(cart)
+    const placeOrder = () => {                                              //order oluşturduğumuz yer
+        dispatch(createOrderAction({
+            orderItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            itemsPrice: cart.itemsPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice
+        }))
+    }
 
     return (
         <div>
@@ -103,10 +130,9 @@ function PlaceOrderPage(props) {
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item >
-                                <Button className={"w-100"} disabled={cart.cartItems.length === 0} type={"submit"}>Complete Order</Button>
+                                {loading ? <Loading/> : <Button onClick={placeOrder} className={"w-100"} disabled={cart.cartItems.length === 0} >Complete Order</Button>}
                             </ListGroup.Item>
-                            {/*<AlertMessage variant={"danger"} message={error}></AlertMessage>*/}
-
+                            {error && <AlertMessage variant={"danger"} message={error}></AlertMessage> }
                         </ListGroup>
                     </Card>
                 </Col>

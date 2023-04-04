@@ -4,8 +4,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 
 class UserSerializer(serializers.ModelSerializer):
-    name = serializers.SerializerMethodField(
-        read_only=True)  # SerializerMethodField ile name alanını oluşturuyoruz. Burası bizim tanımladığımız bir isim.
+    name = serializers.SerializerMethodField(read_only=True)  # SerializerMethodField ile name alanını oluşturuyoruz. Burası bizim tanımladığımız bir isim.
     _id = serializers.SerializerMethodField(read_only=True)
     isAdmin = serializers.SerializerMethodField(read_only=True)
 

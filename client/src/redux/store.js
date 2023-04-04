@@ -4,13 +4,15 @@ import {composeWithDevTools} from "redux-devtools-extension";
 import {productDetailsReducer, productListReducer} from "./reducers/productReducer";
 import {cartReducer} from "./reducers/cartReducer";
 import {userProfileReducer, userReducer} from "./reducers/userReducer";
+import {createOrderReducer} from "./reducers/orderReducer";
 
 const reducer = combineReducers({
     productList: productListReducer,
     productDetails: productDetailsReducer,
     cart: cartReducer,
     user: userReducer,
-    userProfile: userProfileReducer
+    userProfile: userProfileReducer,
+    createOrder: createOrderReducer
 });
 
 const cartItemsFromStorage = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
@@ -25,7 +27,8 @@ const initialState = {
         paymentMethod: paymentMethodFromStorage
     },
     user: {userInfo: userInfoFromStorage},    //userInfo'nun başlangıç değeri localStorage'dan geliyor.
-    userProfile: {userInfo : userInfoFromStorage}
+    userProfile: {userInfo : userInfoFromStorage},
+
 };
 const store = createStore(reducer,initialState,composeWithDevTools(applyMiddleware(thunk)));
 export default store;

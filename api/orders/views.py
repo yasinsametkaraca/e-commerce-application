@@ -35,7 +35,7 @@ def addOrder(request):
             country=data['shippingAddress']['country'],
             shippingPrice=data['shippingPrice'],
         )
-        shipping.save()
+
         # 3. Create order items and set order to orderItem relationship
         for i in orderItems:
             product = Product.objects.get(_id=i['product'])
@@ -49,9 +49,13 @@ def addOrder(request):
                 image=product.image.url
             )
             # 4. Update stock
-            product.countInStock -= item.quantity
+            if (product.countInStock - item.quantity) < 0:
+                product.countInStock = 0
+            else:
+                product.countInStock -= item.quantity
             product.save()
 
+    shipping.save()
     serializer = OrderSerializer(order, many=False)
     return Response(serializer.data)  # OrderSerializerdaki tanımladığımız gibi dönüyoruz.
 
@@ -63,4 +67,3 @@ def getOrders(request):
     orders = Order.objects.filter(user=user)
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
-
