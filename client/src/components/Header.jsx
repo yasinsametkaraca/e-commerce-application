@@ -58,9 +58,7 @@ function Header() {
                                         <Link className={"nav-link"} to={"/register"}>Register</Link>
                                     </>
                                 )
-
                         }
-
                     </Nav>
                 </Navbar.Collapse>
             </Container>

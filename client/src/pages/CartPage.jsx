@@ -30,7 +30,6 @@ function CartPage(props) {
 
     return (
         <div>
-            <h4>My Cart</h4>
             <Row>
                 <Col md={8}>
                     {
@@ -38,28 +37,36 @@ function CartPage(props) {
                            <AlertMessage message={"There are no items in the cart."} variant={"info"}></AlertMessage>
                         ) : (
                            <ListGroup className={"mt-0"} variant={"flush"}>
-                                 {cartItems.map(item => (
-                                     <div>
-                                         <ListGroup.Item key={item.product}>{}</ListGroup.Item>
-                                         <Row>
-                                            <Col md={2}>
-                                                <Image width={100} src={item.image} alt={item.name} fluid rounded></Image>
-                                            </Col>
-                                            <Col className={"d-flex align-items-center"} md={2}><Link to={`/product/${item.product}`}>{item.name}</Link></Col>
-                                            <Col className={"d-flex align-items-center"} md={2}>{item.price}</Col>
-                                            <Col className={"d-flex align-items-center"} md={3}>
-                                                 <Form.Control as={"select"} value={item.quantity} onChange={(e) => dispatch(addToCartAction(item.product, Number(e.target.value)))}>
-                                                        {[...Array(item.countInStock).keys()].map(x => (
-                                                                <option key={x + 1} value={x + 1}>{x + 1}</option>
-                                                            ))}
-                                                 </Form.Control>
-                                            </Col>
-                                            <Col className={"d-flex align-items-center"} md={1}>
-                                                <Button onClick={() => removeFromCartHandler(item.product)} type={"button"} variant={"light"}><i className={"fa fa-trash"}></i></Button>
-                                            </Col>
-                                         </Row>
-                                     </div>
-                                 ))}
+                               <ListGroup.Item>
+                                   <Row>
+                                       <Col>Product</Col>
+                                       <Col>Name</Col>
+                                       <Col>Price</Col>
+                                       <Col>Quantity</Col>
+                                       <Col>Delete</Col>
+                                   </Row>
+                               </ListGroup.Item>
+                               {cartItems.map(item => (
+                                   <ListGroup.Item key={item._id}>
+                                       <Row>
+                                           <Col>
+                                               <Image src={item.image} alt={item.name} fluid rounded></Image>
+                                           </Col>
+                                           <Col className={"d-flex align-items-center"}><Link to={`/product/${item.product}`}>{item.name}</Link></Col>
+                                           <Col className={"d-flex align-items-center"}>{item.price}</Col>
+                                           <Col className={"d-flex align-items-center"}>
+                                               <Form.Control as={"select"} value={item.quantity} onChange={(e) => dispatch(addToCartAction(item.product, Number(e.target.value)))}>
+                                                   {[...Array(item.countInStock).keys()].map(x => (
+                                                       <option key={x + 1} value={x + 1}>{x + 1}</option>
+                                                   ))}
+                                               </Form.Control>
+                                           </Col>
+                                           <Col className={"d-flex align-items-center"}>
+                                               <Button onClick={() => removeFromCartHandler(item.product)} type={"button"} variant={"light"}><i className={"fa fa-trash"}></i></Button>
+                                           </Col>
+                                       </Row>
+                                   </ListGroup.Item>
+                               ))}
                            </ListGroup>
                         )
                     }

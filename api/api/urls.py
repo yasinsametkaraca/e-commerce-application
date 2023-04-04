@@ -23,5 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/products/', include('products.urls')),
     path('api/users/', include('users.urls')),
+    path('api/orders/', include('orders.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # http://127.0.0.1:8000/images/e3b12f41075e160a1082bb687a8ab027.jpg diyerek resimlere ulaşabiliriz.
