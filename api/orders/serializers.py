@@ -31,10 +31,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def get_shippingAddress(self, obj):
         try:
-            address = ShippingAddressSerializer(obj.shippingaddress, many=False).data
+            shippingAddress = obj.shippingaddress_set.all()[0]
+            serializer = ShippingAddressSerializer(shippingAddress, many=False).data
         except:
-            address = False
-        return address
+            serializer = False
+        return serializer
 
     def get_user(self, obj):
         user = obj.user

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from .models import Order, ShippingAddress, OrderItem
@@ -61,9 +61,33 @@ def addOrder(request):
 
 
 @api_view(['GET', ])
+@permission_classes([IsAuthenticated, IsAdminUser])
+def getALlOrders(request):
+    orders = Order.objects.all()
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET', ])
 @permission_classes([IsAuthenticated], )
-def getOrders(request):
+def getOrderById(request, pk):  # id'ye göre tek order getir.
+    user = request.user
+    try:
+        order = Order.objects.get(_id=pk)
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializer(order, many=False)
+            return Response(serializer.data)
+        else:
+            return Response({'detail': 'Not authorized to view this order'}, status=status.HTTP_403_FORBIDDEN)
+    except:
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['GET', ])
+@permission_classes([IsAuthenticated], )
+def getOrdersByUser(request):  # user'a ait orderları getir.
     user = request.user
     orders = Order.objects.filter(user=user)
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
+

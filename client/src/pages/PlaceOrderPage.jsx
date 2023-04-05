@@ -16,8 +16,8 @@ function PlaceOrderPage(props) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const creteOrder = useSelector(state => state.createOrder);
-    const {order, success, error,loading} = creteOrder;
+    const createOrder = useSelector(state => state.createOrder);
+    const {order, success, error,loading} = createOrder;
 
     console.log(order)
 

@@ -15,6 +15,8 @@ import {
     USER_UPDATE_PROFILE_SUCCESS
 } from "../constants/userConstants";
 import axios from "axios";
+import {CART_CLEAR_ITEMS} from "../constants/cartConstants";
+import {CREATE_ORDER_RESET} from "../constants/orderConstants";
 
 
 export const loginAction = (username, password) => async (dispatch) => {
@@ -45,6 +47,11 @@ export const logoutAction = () => (dispatch) => {
     localStorage.removeItem('userInfo');  //sonradan cookilerle yapıcam burayı.
     dispatch({ type: USER_LOGOUT });
     dispatch({ type: USER_DETAIL_RESET });
+    dispatch({ type: CART_CLEAR_ITEMS });
+    dispatch({ type: CREATE_ORDER_RESET });
+    localStorage.removeItem('paymentMethod');
+    localStorage.removeItem('shippingAddress');
+    localStorage.removeItem('cartItems');
 }
 
 export const getUserDetailAction = () => async (dispatch, getState) => {
