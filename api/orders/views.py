@@ -35,7 +35,6 @@ def addOrder(request):
             country=data['shippingAddress']['country'],
             shippingPrice=data['shippingPrice'],
         )
-
         # 3. Create order items and set order to orderItem relationship
         for i in orderItems:
             product = Product.objects.get(_id=i['product'])
@@ -76,6 +75,7 @@ def getOrderById(request, pk):  # id'ye göre tek order getir.
         order = Order.objects.get(_id=pk)
         if user.is_staff or order.user == user:
             serializer = OrderSerializer(order, many=False)
+            print(serializer.data)
             return Response(serializer.data)
         else:
             return Response({'detail': 'Not authorized to view this order'}, status=status.HTTP_403_FORBIDDEN)
@@ -87,7 +87,7 @@ def getOrderById(request, pk):  # id'ye göre tek order getir.
 @permission_classes([IsAuthenticated], )
 def getOrdersByUser(request):  # user'a ait orderları getir.
     user = request.user
-    orders = Order.objects.filter(user=user)
+    orders = user.order_set.all()  # user'a ait orderları getir. User modelinde order yok bu yüzden _set ile yazdık. orders = Order.objects.filter(user=user) doğrusu bu şekildedir.
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 

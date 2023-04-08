@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import {useNavigate} from "react-router-dom";
-import {Col, Row, Form} from "react-bootstrap";
+import {Link, useNavigate} from "react-router-dom";
+import {Col, Row, Form, Table} from "react-bootstrap";
 import AlertMessage from "../components/AlertMessage";
 import Loading from "../components/Loading";
 import {updateUserProfileAction} from "../redux/actions/userAction";
+import {getOrdersByUserAction} from "../redux/actions/orderAction";
 
 function ProfilePage(props) {
 
@@ -20,11 +21,14 @@ function ProfilePage(props) {
     const {userInfo,loading} = user;
     const userProfileUpdate = useSelector(state => state.userProfile);
     const {success,error} = userProfileUpdate;
+    const ordersByUser = useSelector(state => state.ordersByUser);
+    const {orders,error:errorOrders, loading:loadingOrders} = ordersByUser;
 
     useEffect(() => {
         if (!userInfo) {
             navigate("/login");
         } else {
+            dispatch(getOrdersByUserAction())
             setUserDetails({
                 username: userInfo.username,
                 name: userInfo.name,
@@ -33,11 +37,12 @@ function ProfilePage(props) {
         }
     }, [dispatch, navigate, userInfo]);
 
-    function updateUserProfile(e) {
+    const updateUserProfile = (e) => {
        e.preventDefault();
        if(userDetails.username.length > 0 && userDetails.name.length > 0 && userDetails.email.length > 0){
            setMessage(null)
            dispatch(updateUserProfileAction(userDetails));
+
            setMessage("Profile updated successfully.")
        }else {
            setMessage("All fields are required.");
@@ -66,6 +71,35 @@ function ProfilePage(props) {
                         {success && <AlertMessage variant={"info"} message={message}></AlertMessage>}
                         {error && <AlertMessage variant={"warning"} message={error}></AlertMessage>}
                     </Form>
+                </Col>
+                <Col md={8}>
+                    <h2 className={"nav-item"}>My Orders</h2>
+                    {loadingOrders ? <Loading></Loading> : errorOrders ? <AlertMessage variant={"warning"} message={errorOrders}></AlertMessage> : (
+                        <Table striped bordered hover size="sm" responsive>
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Order Date</th>
+                                    <th>Total Price</th>
+                                    <th>Payment Status</th>
+                                    <th>Order Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {orders.map(order => (
+                                    <tr key={order._id}>
+                                        <td>{order?._id}</td>
+                                        <td>{order?.createAt?.substring(0,10)}</td>
+                                        <td>{order?.totalPrice}</td>
+                                        <td>{order?.isPaid ? order.paidAt?.substring(0,10) : "Not Paid"}</td>
+                                        <td>{order?.isDelivered ? order.deliveredAt?.substring(0,10) : "Not Delivered"}</td>
+                                        <td><Link to={`/order/${order._id}`} className={"btn btn-primary"}>Details</Link></td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </Table>
+                    )}
                 </Col>
             </Row>
         </div>

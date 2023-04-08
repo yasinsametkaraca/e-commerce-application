@@ -16,7 +16,10 @@ import {
 } from "../constants/userConstants";
 import axios from "axios";
 import {CART_CLEAR_ITEMS} from "../constants/cartConstants";
-import {CREATE_ORDER_RESET} from "../constants/orderConstants";
+import {
+    CREATE_ORDER_RESET,
+    ORDERS_BY_USER_RESET
+} from "../constants/orderConstants";
 
 
 export const loginAction = (username, password) => async (dispatch) => {
@@ -26,7 +29,6 @@ export const loginAction = (username, password) => async (dispatch) => {
         const {data} = await axios.post('/api/users/login', {username, password}, config);
         dispatch({ type: USER_LOGIN_SUCCESS, payload: data });  //login olunca user bilgilerini payload olarak gönderiyoruz. Olmazsa catch e düşüyor.
         localStorage.setItem('userInfo', JSON.stringify(data));  //localstorage'a user bilgilerini kaydediyoruz.
-
     } catch (err) {
         dispatch({ type: USER_LOGIN_FAIL, payload: err.response && err.response.data.message ? err.response.data.message : err.message });
     }
@@ -49,6 +51,7 @@ export const logoutAction = () => (dispatch) => {
     dispatch({ type: USER_DETAIL_RESET });
     dispatch({ type: CART_CLEAR_ITEMS });
     dispatch({ type: CREATE_ORDER_RESET });
+    dispatch({ type: ORDERS_BY_USER_RESET });
     localStorage.removeItem('paymentMethod');
     localStorage.removeItem('shippingAddress');
     localStorage.removeItem('cartItems');

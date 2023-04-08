@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import CheckoutSteps from "../components/CheckoutSteps";
 import FormContainer from "../components/FormContainer";
 import {useDispatch, useSelector} from "react-redux";
@@ -12,6 +12,12 @@ function ShippingPage() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [shipping,setShipping] = useState({...shippingAddress});
+
+    useEffect(() => {
+        if (localStorage.getItem("userInfo") === null) {
+            navigate("/login")
+        }
+    }, [navigate]);
 
     const shippingHandler = (e) => {
         e.preventDefault();
